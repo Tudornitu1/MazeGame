@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div id="start-overlay">
+        <button id="start-button" class="btn btn-primary" onclick="startGame()">Start Game</button>
+    </div>
+
+    <div class="game-container">
+        <h1>Maze Game</h1>
+
+        <!-- Difficulty Selection -->
+        <div class="diffSelect">
+            <label for="difficulty" >Select Difficulty:</label>
+            <select id="difficulty" class="btn btn-primary dropdown-toggle" onchange="initializeGame()" disabled>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+                <option value="extreme">Extreme</option>
+
+            </select>
+        </div>
+    
+        
+        <!-- Maze Canvas -->
+        <canvas id="mazeCanvas"></canvas>
+
+        <!-- Timer and Move Count Display -->
+        <h3 class="mt-3">Time: <span id="timer">0:00</span></h3>
+        <h3>Moves: <span id="move-count">0</span></h3>
+
+        <!-- Restart Button -->
+        <button class="btn btn-primary mt-3" onclick="initializeGame()">Restart</button>
+    </div>
+
+    <!-- Modal for win message -->
+    <div class="modal fade" id="winModal" tabindex="-1" aria-labelledby="winModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="winModalLabel">Congratulations!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    You completed the maze in <span id="final-moves"></span> moves and <span id="final-time"></span> minutes.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="initializeGame()">Play Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
