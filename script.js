@@ -10,10 +10,10 @@ let elapsedTime = 0;
 
 // Difficulty settings
 const settings = {
-    easy: { size: 10, cellSize: 50 },
-    medium: { size: 15, cellSize: 33 },
-    hard: { size: 20, cellSize: 25 },
-    extreme: { size: 25, cellSize: 20 }
+    easy: { size: 10, cellSize: 60 },   // Increase cell size to 60px
+    medium: { size: 15, cellSize: 45 },
+    hard: { size: 20, cellSize: 35 },
+    extreme: { size: 25, cellSize: 30 }
 };
 
 // Function to start the game and remove overlay
@@ -29,39 +29,40 @@ function initializeGame() {
     clearInterval(timerInterval); // Stop any existing timer
     elapsedTime = 0;
     updateTimerDisplay();
-    
+
     const difficulty = document.getElementById("difficulty").value;
     const { size, cellSize } = settings[difficulty];
+    
+    // Set canvas dimensions based on selected size and cellSize
     canvas.width = size * cellSize;
     canvas.height = size * cellSize;
-    maze = generateMaze(size);
+
+    maze = generateMaze(size);    // Generate a maze of the specified size
     playerPosition = { x: 0, y: 0 };
     moveCount = 0;
     document.getElementById("move-count").innerText = moveCount;
 
     startTimer(); // Start the timer
-    renderMaze(size, cellSize);
+    renderMaze(size, cellSize); 
+
+    // Center the canvas after rendering
+    const mazeContainer = document.getElementById('maze-container');
+    mazeContainer.style.width = canvas.width + 'px';   // Render the maze with the new settings
 }
 
-// Remaining game functions...
-
-
-// Start the timer
 function startTimer() {
     timerInterval = setInterval(() => {
         elapsedTime++;
         updateTimerDisplay();
-    }, 1000); // Update every second
+    }, 1000); 
 }
 
-// Update timer display in the format minutes:seconds
 function updateTimerDisplay() {
     const minutes = Math.floor(elapsedTime / 60);
     const seconds = elapsedTime % 60;
     document.getElementById("timer").innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
-// Stop the timer
 function stopTimer() {
     clearInterval(timerInterval);
 }
@@ -186,6 +187,8 @@ function playAgain() {
     $('#winModal').modal('hide'); // Hide the modal
     initializeGame(); // Restart the game
 }
+
+
 
 
 // Initialize the game on load

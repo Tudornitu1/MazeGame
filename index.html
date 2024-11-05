@@ -29,7 +29,8 @@
     
         
         <!-- Maze Canvas -->
-        <canvas id="mazeCanvas"></canvas>
+        <div id="maze-container"><canvas id="mazeCanvas"></canvas></div>
+        
 
         <!-- Timer and Move Count Display -->
         <h3 class="mt-3">Time: <span id="timer">0:00</span></h3>
@@ -41,7 +42,7 @@
 
     <!-- Modal for win message -->
     <div class="modal fade" id="winModal" tabindex="-1" aria-labelledby="winModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="winModalLabel">Congratulations!</h5>
@@ -54,7 +55,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="initializeGame()">Play Again</button>
+                    <button type="button" class="btn btn-primary" onclick="playAgain()">Play Again</button>
                 </div>
             </div>
         </div>
