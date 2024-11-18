@@ -3,17 +3,73 @@ const ctx = canvas.getContext('2d');
 let maze = [];
 let playerPosition = { x: 0, y: 0 };
 let moveCount = 0;
+const moveSound = document.getElementById("move-sound");
+const winSound = document.getElementById("win-sound");
+const music = document.getElementById("music");
 const CANVAS_SIZE = 630;
 // Timer variables
 let timerInterval;
 let elapsedTime = 0;
 
+
+// Get references to the audio elements
+music.loop = true; // Set music to loop
+
+// Set initial volumes (default is 1)
+let musicVolume = 1;
+let soundVolume = 1;
+
+// Update the music volume when the user changes the slider
+document.getElementById("music-volume").addEventListener("input", function() {
+    musicVolume = this.value;
+    music.volume = musicVolume; // Update music volume
+});
+
+// Update the sound effects volume when the user changes the slider
+document.getElementById("sound-volume").addEventListener("input", function() {
+    soundVolume = this.value;
+    moveSound.volume = soundVolume; // Update sound effects volume
+});
+
+// Function to play the move sound
+function playMoveSound() {
+    moveSound.play();
+}
+
+// Function to play the background music
+function playBackgroundMusic() {
+    if (music.paused) {
+        music.play(); // Start playing music
+    }
+}
+
+// Start the music when the game starts
+playBackgroundMusic();
+
+// Add a listener to the settings button to show the modal
+document.getElementById("settings-button").addEventListener("click", function() {
+    $('#settingsModal').modal('show'); // Show the settings modal using Bootstrap
+});
+
+// Optionally, you can stop or pause music when the game ends or based on user input
+function stopBackgroundMusic() {
+    music.pause();
+}
+
+// Function to reset sound volumes to defaults (optional)
+function resetVolumes() {
+    music.volume = 1;
+    moveSound.volume = 1;
+    document.getElementById("music-volume").value = 1;
+    document.getElementById("sound-volume").value = 1;
+}
+
 // Difficulty settings
 const settings = {
-    easy: { size: 10, cellSize: 60, moveThresholds: [10, 15], timeThresholds: [30, 60] },
-    medium: { size: 15, cellSize: 45, moveThresholds: [15, 20], timeThresholds: [90, 180] },
-    hard: { size: 20, cellSize: 35, moveThresholds: [20, 25], timeThresholds: [120, 240] },
-    extreme: { size: 25, cellSize: 30, moveThresholds: [25, 30], timeThresholds: [180, 360] }
+    easy: { size: 10, cellSize: 60, moveThresholds: [35, 45], timeThresholds: [30, 60] },
+    medium: { size: 15, cellSize: 45, moveThresholds: [75, 95], timeThresholds: [40, 60] },
+    hard: { size: 20, cellSize: 35, moveThresholds: [85, 105], timeThresholds: [60, 90] },
+    extreme: { size: 25, cellSize: 30, moveThresholds: [105, 125], timeThresholds: [90, 120] }
 };
 
 // Function to start the game and remove overlay
@@ -70,17 +126,18 @@ function initializeGame() {
     updateTimerDisplay();
 
     const difficulty = document.getElementById("difficulty").value;
-    const { size } = settings[difficulty]; // Use only 'size' now, not 'cellSize'
+    const { size } = settings[difficulty];
     
     // Set canvas dimensions to a fixed size
     canvas.width = CANVAS_SIZE;
     canvas.height = CANVAS_SIZE;
 
-    // Dynamically calculate cell size based on maze size
+    // Calculate cell size once based on the canvas size and maze size
     const cellSize = CANVAS_SIZE / size;
 
+    // Ensure valid maze generation
     do {
-        maze = generateMaze(size); // Generate until a valid path exists
+        maze = generateMaze(size);
     } while (!isPathExists(maze, size));
 
     playerPosition = { x: 0, y: 0 };
@@ -88,12 +145,11 @@ function initializeGame() {
     document.getElementById("move-count").innerText = moveCount;
 
     startTimer(); // Start the timer
-    renderMaze(size, cellSize); 
-
-    // Center the canvas after rendering
-    const mazeContainer = document.getElementById('maze-container');
-    mazeContainer.style.width = CANVAS_SIZE + 'px';
+    renderMaze(size, cellSize); // Render maze with the pre-calculated cellSize
+    gameOver = false;
+    this.cellSize = cellSize;
 }
+
 
 
 
@@ -163,25 +219,22 @@ function generateMaze(size) {
 }
 
 function renderMaze(size, cellSize) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    
     maze.forEach((row, y) => {
         row.forEach((cell, x) => {
-            if (x === size - 1 && y === size - 1) {
-                ctx.fillStyle = '#007bff'; // Blue for end point
-            } else if (cell === 1) {
-                ctx.fillStyle = '#333'; // Wall
-            } else {
-                ctx.fillStyle = '#f8f9fa'; // Path
-            }
+            ctx.fillStyle = (x === size - 1 && y === size - 1) ? '#00ff00' : (cell === 1 ? '#333' : '#f8f9fa');
             ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         });
     });
 
-    // Draw player
+    // Draw player at current position
     ctx.fillStyle = '#007bff';
     ctx.fillRect(playerPosition.x * cellSize, playerPosition.y * cellSize, cellSize, cellSize);
 }
+
+
+
 
 
 // Update player position and count moves
@@ -201,73 +254,65 @@ function movePlayer(dx, dy) {
         playerPosition = { x: newX, y: newY };
         moveCount++;
         document.getElementById("move-count").innerText = moveCount;
-        renderMaze(maze.length, settings[document.getElementById("difficulty").value].cellSize);
-
+        renderMaze(maze.length, this.cellSize);
         // Check if player has reached the end
         if (newX === maze.length - 1 && newY === maze.length - 1) {
             stopTimer(); // Stop the timer
             displayWinModal(); // Show win modal
+            winSound.play();
             gameOver = true; // Set the game over flag to true
         }
     }
+    playMoveSound();
 }
 
 
-// Display win modal with final stats
-function displayWinModal() {
-    const finalTime = document.getElementById("timer").innerText;
-    document.getElementById("final-moves").innerText = moveCount;
-    document.getElementById("final-time").innerText = finalTime;
 
-    // Calculate stars
-    const totalStars = calculateStars(moveCount, elapsedTime);
-    displayStars(totalStars); // Call function to display stars
-
-    $('#winModal').modal('show'); // Show the modal using Bootstrap
-}
 
 function calculateStars(moves, elapsedTime, difficulty) {
-    const { moveThresholds, timeThresholds } = settings[difficulty]; // Get thresholds for the current difficulty
+    const { moveThresholds, timeThresholds } = settings[difficulty];
 
     let moveStars = 0;
     let timeStars = 0;
 
     // Calculate stars based on moves
     if (moves <= moveThresholds[0]) {
-        moveStars = 3; // 3 stars for less than or equal to the first threshold
+        moveStars = 3;
     } else if (moves > moveThresholds[0] && moves <= moveThresholds[1]) {
-        moveStars = 2; // 2 stars for between the two thresholds
+        moveStars = 2;
     } else {
-        moveStars = 1; // 1 star for more than the second threshold
+        moveStars = 1;
     }
 
     // Calculate stars based on time
     if (elapsedTime <= timeThresholds[0]) {
-        timeStars = 3; // 3 stars for less than or equal to the first threshold
+        timeStars = 3;
     } else if (elapsedTime > timeThresholds[0] && elapsedTime <= timeThresholds[1]) {
-        timeStars = 2; // 2 stars for between the two thresholds
+        timeStars = 2;
     } else {
-        timeStars = 1; // 1 star for more than the second threshold
+        timeStars = 1;
     }
 
-    return Math.max(moveStars, timeStars); // Return the higher of the two star counts
+    // Return the lower of the two star counts
+    return Math.min(moveStars, timeStars); 
 }
 
 
 
-// Update displayWinModal function
 function displayWinModal() {
-    const finalTime = elapsedTime; // Use elapsed time directly in seconds
     const finalMoves = moveCount; // Get the move count
     const difficulty = document.getElementById("difficulty").value; // Get the current difficulty
 
     document.getElementById("final-moves").innerText = finalMoves;
-    
-    // Format elapsed time to display in seconds
-    document.getElementById("final-time").innerText = `${finalTime}`; // Show time in seconds
+
+    // Format elapsed time to display in minutes and seconds
+    const minutes = Math.floor(elapsedTime / 60);
+    const seconds = elapsedTime % 60;
+    document.getElementById("final-time").innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
     // Calculate stars based on the current difficulty
-    const totalStars = calculateStars(finalMoves, finalTime, difficulty);
+    const totalStars = calculateStars(finalMoves, elapsedTime, difficulty);
+    console.log("Total Stars:", totalStars);  // Log the star count for debugging
     displayStars(totalStars); // Call function to display stars
 
     $('#winModal').modal('show'); // Show the modal using Bootstrap
@@ -276,19 +321,7 @@ function displayWinModal() {
 
 
 
-// Function to display stars in the modal
-function displayStars(starCount) {
-    const starContainer = document.getElementById("star-rating");
-    starContainer.innerHTML = ''; // Clear previous stars
 
-    // Add star images or characters based on starCount
-    for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('span');
-        star.innerHTML = '★'; // You can replace this with an image of a star if needed
-        star.style.color = 'gold'; // Style the stars as needed
-        starContainer.appendChild(star);
-    }
-}
 
 
 // Function to display stars in the modal
@@ -296,14 +329,60 @@ function displayStars(starCount) {
     const starContainer = document.getElementById("star-rating");
     starContainer.innerHTML = ''; // Clear previous stars
 
-    // Add star images or characters based on starCount
-    for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('span');
-        star.innerHTML = '★'; // You can replace this with an image of a star if needed
-        star.style.color = 'gold'; // Style the stars as needed
-        starContainer.appendChild(star);
-    }
+    setTimeout(() => {
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('span');
+            star.innerHTML = '★';
+            star.style.color = 'gold';
+            star.style.opacity = 0; // Initially hide the star
+            starContainer.appendChild(star);
+
+            // Animate the star after a short delay
+            setTimeout(() => {
+                star.animate([
+                    { opacity: 0 },
+                    { opacity: 1 }
+                ], {
+                    duration: 500, // Animation duration in milliseconds
+                    fill: 'forwards' // Keep the final state after animation
+                });
+            }, i * 300); // Delay each star's animation
+        }
+    }, 300); // Add a slight delay before adding stars (300ms)
 }
+
+function playMoveSound() {
+    moveSound.play();
+}
+
+function toggleDarkMode() {
+    const body = document.body;
+    const isDarkMode = body.getAttribute('data-theme') === 'dark';
+    
+    // Toggle dark mode
+    if (isDarkMode) {
+        body.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        document.querySelector("#dark-mode-toggle i").className = "fas fa-moon"; // Moon icon for light mode
+    } else {
+        body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        document.querySelector("#dark-mode-toggle i").className = "fas fa-sun"; // Sun icon for dark mode
+    }
+
+    function openSettings() {
+    alert("Settings menu coming soon!");
+}
+
+
+    // Apply data-theme to other key elements
+    document.querySelector('.game-container').setAttribute('data-theme', isDarkMode ? '' : 'dark');
+    document.querySelector('#mazeCanvas').setAttribute('data-theme', isDarkMode ? '' : 'dark');
+    document.querySelector('#winModal').setAttribute('data-theme', isDarkMode ? '' : 'dark');
+}
+
+
+
 
 
 // Keyboard controls for the player
@@ -328,6 +407,7 @@ document.addEventListener("keydown", (event) => {
 function playAgain() {
     $('#winModal').modal('hide'); // Hide the modal
     initializeGame(); // Restart the game
+    gameOver=false;
 }
 
 

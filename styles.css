@@ -3,11 +3,10 @@ body, html {
     overflow: hidden;
     margin: 0;
     padding: 0;
-    height: 100vh; 
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0;
 }
 
 /* Overlay to blur only the canvas */
@@ -46,8 +45,6 @@ body, html {
 /* Game container to center canvas and content */
 .game-container {
     text-align: center;
-    /* Remove fixed width */
-    /* max-width: 500px; */
     padding: 20px;
 }
 
@@ -60,18 +57,127 @@ body, html {
 
 /* Initial blurred canvas */
 #mazeCanvas {
-    border: 2px solid #333;
-    margin-top: 20px;
-    filter: blur(5px);
-    transition: filter 0.3s ease;
-    width: auto;
-    height: auto;
+    background-color: #fff;
+    border: 20px solid transparent; /* Increased border width */
+    padding: 10px;
+    background-image: linear-gradient(white, white), linear-gradient(45deg, #ff5733, #f0c00f, #00d4ff, #28a745);
+    background-origin: border-box; /* Ensure the gradient only applies to the border */
+    background-clip: content-box, border-box; /* Clip the content area so it doesn't get affected by the border gradient */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* Subtle shadow for a glowing effect */
+    border-radius: 20px; /* Increased rounded corners to match thicker border */
+    transition: all 0.3s ease; /* Smooth transition */
 }
 
-#restartBtn{
+#mazeCanvas:hover {
+    box-shadow: 0 0 30px rgba(255, 87, 51, 0.8); /* Increased glowing effect on hover */
+}
+
+#restartBtn {
     margin-top: 0;
 }
 
-#movesText{
+#movesText {
     margin-bottom: 0px;
+}
+
+/* Star rating */
+#star-rating {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 6em;
+    color: gold;
+    width: 100%;
+    margin-bottom: 0;
+    position: absolute;
+    top: 23vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1051;
+}
+
+/* Modal adjustments */
+#winModal .modal-dialog {
+    margin-top: 0;
+    position: relative;
+}
+
+/* Default Light Mode Styles */
+body {
+    background-color: #ffffff; /* White background */
+    color: #000000; /* Black text */
+}
+
+.game-container {
+    background-color: #f9f9f9; /* Light gray background */
+}
+
+#mazeCanvas {
+    background-color: #fff; /* White background for the maze */
+    border: 2px solid #ccc; /* Light border */
+}
+
+#dark-mode-toggle {
+    background-color: #f8f9fa; /* Light button */
+    color: #000000;
+}
+
+/* Dark Mode Styles */
+body[data-theme='dark'] {
+    background-color: #333; /* Dark background */
+    color: #e0e0e0; /* Light text */
+}
+
+.game-container[data-theme='dark'] {
+    background-color: #333; /* Dark container */
+}
+
+#mazeCanvas[data-theme='dark'] {
+    background-color: #333; /* Dark maze background */
+    border: 2px solid #555; /* Dark border */
+}
+
+/* Dark mode button styles */
+#dark-mode-toggle[data-theme='dark'],
+#settings-button[data-theme='dark'] {
+    background-color: #444;
+    color: #fff;
+}
+
+/* Ensure the controls are in the top-right corner */
+#top-right-controls {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+    z-index: 1001;
+}
+
+/* Style buttons consistently */
+#dark-mode-toggle, #settings-button {
+    padding: 10px;
+    font-size: 1.5em;
+    border-radius: 5px;
+    border: none;
+    background-color: transparent;
+    color: inherit;
+}
+
+/* Hover effects */
+#dark-mode-toggle:hover, #settings-button:hover {
+    background-color: #666;
+}
+
+/* Modal settings for dark mode */
+body[data-theme='dark'] #winModal .modal-content {
+    background-color: #444; /* Darker background for the modal */
+    color: black; /* Black text for the modal in dark mode */
+}
+
+body[data-theme='dark'] .modal-body,
+body[data-theme='dark'] .modal-header,
+body[data-theme='dark'] .modal-footer {
+    color: white; /* Ensure modal text is black in dark mode */
 }
