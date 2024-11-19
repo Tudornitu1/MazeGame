@@ -55,7 +55,6 @@ body, html {
     margin-right: auto;
 }
 
-/* Initial blurred canvas */
 #mazeCanvas {
     background-color: #fff;
     border: 20px solid transparent; /* Increased border width */
@@ -176,8 +175,13 @@ body[data-theme='dark'] #winModal .modal-content {
     color: black; /* Black text for the modal in dark mode */
 }
 
+body[data-theme='dark'] #settingsModal .modal-content {
+    background-color: #444; /* Darker background for the modal */
+    color: black; /* Black text for the modal in dark mode */
+}
+
 body[data-theme='dark'] .modal-body,
 body[data-theme='dark'] .modal-header,
 body[data-theme='dark'] .modal-footer {
-    color: white; /* Ensure modal text is black in dark mode */
+    color: white; 
 }
