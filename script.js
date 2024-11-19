@@ -538,7 +538,7 @@ function playAgain() {
 
     moveCount = 0;
     document.getElementById("move-count").innerText = moveCount;
-    elapsedTime=0;
+    startTimer();
     initializeGame(); // Regenerate the maze and reset the game state
 
     playerPosition = { x: 0, y: 0 }; // Reset the player position AFTER initializing the maze
