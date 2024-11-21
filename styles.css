@@ -154,6 +154,8 @@ body[data-theme='dark'] {
     border: none;
     color: inherit;
     background-color:#ccc;
+    color: black;
+
 }
 
 /* Hover effects */
