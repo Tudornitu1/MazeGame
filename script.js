@@ -5,15 +5,13 @@ let playerPosition = { x: 0, y: 0 };
 let moveCount = 0;
 const moveSound = document.getElementById("move-sound");
 const winSound = document.getElementById("win-sound");
-const music = document.getElementById("music");
-
 const CANVAS_SIZE = 630;
 let cellsize;
 // Timer variables
 let timerInterval;
 let elapsedTime = 0;
-
-
+// Music variables
+const music = document.getElementById("music");
 
 let musicVolume = 1;
 let soundVolume = 1;
@@ -23,15 +21,24 @@ music.loop = true;
 // Function to play the background music
 function playBackgroundMusic() {
     if (music.paused) {
-        music.play(); // Start playing music if it's paused
+        music.play(); 
     }
 }
+
+
 
 // Start the music when the game starts
 playBackgroundMusic();
 
-
-
+//Make light mode default
+document.addEventListener('DOMContentLoaded', function () {
+    document.body.setAttribute('data-theme', 'light');
+    document.querySelector("#dark-mode-toggle i").className = "fas fa-moon"; 
+    document.querySelector('.game-container').setAttribute('data-theme', savedTheme === 'dark' ? 'dark' : 'light');
+    document.querySelector('#mazeCanvas').setAttribute('data-theme', savedTheme === 'dark' ? 'dark' : 'light');
+    document.querySelector('#winModal').setAttribute('data-theme', savedTheme === 'dark' ? 'dark' : 'light');
+    playBackgroundMusic();
+});
 
 
 document.getElementById("music-volume").addEventListener("input", function () {
@@ -507,7 +514,7 @@ function toggleDarkMode() {
     
     // Toggle dark mode
     if (isDarkMode) {
-        body.removeAttribute('data-theme');
+        body.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
         document.querySelector("#dark-mode-toggle i").className = "fas fa-moon"; // Moon icon for light mode
     } else {
@@ -515,11 +522,6 @@ function toggleDarkMode() {
         localStorage.setItem('theme', 'dark');
         document.querySelector("#dark-mode-toggle i").className = "fas fa-sun"; // Sun icon for dark mode
     }
-
-    function openSettings() {
-    alert("Settings menu coming soon!");
-}
-
 
     // Apply data-theme to other key elements
     document.querySelector('.game-container').setAttribute('data-theme', isDarkMode ? '' : 'dark');
@@ -539,9 +541,9 @@ function playAgain() {
     moveCount = 0;
     document.getElementById("move-count").innerText = moveCount;
     startTimer();
-    initializeGame(); // Regenerate the maze and reset the game state
+    initializeGame(); 
 
-    playerPosition = { x: 0, y: 0 }; // Reset the player position AFTER initializing the maze
+    playerPosition = { x: 0, y: 0 }; 
     gameOver = false; // Ensure the game can continue
 }
 

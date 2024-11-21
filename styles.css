@@ -9,24 +9,14 @@ body, html {
     align-items: center;
 }
 
-/* Overlay to blur only the canvas */
-#start-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+body[data-theme='light'] {
+    background-image: url("light_back.jpg"); 
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-#start-button {
-    font-size: 1.5em;
-    padding: 10px 20px;
-}
+
 
 .diffSelect {
     display: flex;
@@ -35,6 +25,7 @@ body, html {
     align-items: center;
     gap: 1rem;
     padding: 0.5rem;
+    margin-top: 10px;
 }
 
 .diffSelect > label {
@@ -44,9 +35,15 @@ body, html {
 
 /* Game container to center canvas and content */
 .game-container {
+    border: none;
+    box-shadow: none;
     text-align: center;
     padding: 20px;
+    background: transparent;
+    color: white;
+
 }
+
 
 /* Center the maze container */
 #maze-container {
@@ -59,24 +56,25 @@ body, html {
     background-color: #fff;
     border: 20px solid transparent; /* Increased border width */
     padding: 10px;
-    background-image: linear-gradient(white, white), linear-gradient(45deg, #ff5733, #f0c00f, #00d4ff, #28a745);
-    background-origin: border-box; /* Ensure the gradient only applies to the border */
-    background-clip: content-box, border-box; /* Clip the content area so it doesn't get affected by the border gradient */
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* Subtle shadow for a glowing effect */
-    border-radius: 20px; /* Increased rounded corners to match thicker border */
-    transition: all 0.3s ease; /* Smooth transition */
+    background-image: linear-gradient(white, white), 
+                    linear-gradient(45deg, #ff5733, #f0c00f, #00d4ff, #28a745);
+    background-origin: border-box; 
+    background-clip: content-box, border-box; 
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); 
+    border-radius: 20px; 
+    transition: all 0.3s ease; 
 }
 
 #mazeCanvas:hover {
-    box-shadow: 0 0 30px rgba(255, 87, 51, 0.8); /* Increased glowing effect on hover */
+    box-shadow: 0 0 50px rgba(255, 87, 51, 0.8); 
 }
 
 #restartBtn {
-    margin-top: 0;
+    margin-top: 5px;
 }
 
 #movesText {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 /* Star rating */
@@ -102,34 +100,27 @@ body, html {
     position: relative;
 }
 
-/* Default Light Mode Styles */
-body {
-    background-color: #ffffff; /* White background */
-    color: #000000; /* Black text */
-}
-
-.game-container {
-    background-color: #f9f9f9; /* Light gray background */
-}
-
 #mazeCanvas {
-    background-color: #fff; /* White background for the maze */
+    background-color: #fff; /* White maze background */
     border: 2px solid #ccc; /* Light border */
 }
 
-#dark-mode-toggle {
+#dark-mode-toggle , #settings-button{
     background-color: #f8f9fa; /* Light button */
-    color: #000000;
+    color: #ffffff;
 }
 
 /* Dark Mode Styles */
 body[data-theme='dark'] {
-    background-color: #333; /* Dark background */
     color: #e0e0e0; /* Light text */
+    background-image: url("dark_back.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .game-container[data-theme='dark'] {
-    background-color: #333; /* Dark container */
+    background: transparent;
 }
 
 #mazeCanvas[data-theme='dark'] {
@@ -155,33 +146,32 @@ body[data-theme='dark'] {
 }
 
 /* Style buttons consistently */
-#dark-mode-toggle, #settings-button {
+#dark-mode-toggle,
+#settings-button {
     padding: 10px;
-    font-size: 1.5em;
-    border-radius: 5px;
+    font-size: 1.3em;
+    border-radius: 10px;
     border: none;
-    background-color: transparent;
     color: inherit;
+    background-color:#ccc;
 }
 
 /* Hover effects */
-#dark-mode-toggle:hover, #settings-button:hover {
+#dark-mode-toggle:hover,
+#settings-button:hover {
     background-color: #666;
 }
 
-/* Modal settings for dark mode */
-body[data-theme='dark'] #winModal .modal-content {
-    background-color: #444; /* Darker background for the modal */
-    color: black; /* Black text for the modal in dark mode */
-}
 
+/* Modal settings for dark mode */
+body[data-theme='dark'] #winModal .modal-content,
 body[data-theme='dark'] #settingsModal .modal-content {
-    background-color: #444; /* Darker background for the modal */
-    color: black; /* Black text for the modal in dark mode */
+    background-color: #444; /* Darker background */
+    color: black; /* Modal text */
 }
 
 body[data-theme='dark'] .modal-body,
 body[data-theme='dark'] .modal-header,
 body[data-theme='dark'] .modal-footer {
-    color: white; 
+    color: white;
 }
