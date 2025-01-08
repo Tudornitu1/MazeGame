@@ -7,18 +7,15 @@ const moveSound = document.getElementById("move-sound");
 const winSound = document.getElementById("win-sound");
 const CANVAS_SIZE = 630;
 let cellsize;
-// Timer variables
+
 let timerInterval;
 let elapsedTime = 0;
-// Music variables
-const music = document.getElementById("music");
 
+const music = document.getElementById("music");
 let musicVolume = 1;
 let soundVolume = 1;
-
 music.loop = true;
 
-// Function to play the background music
 function playBackgroundMusic() {
     if (music.paused) {
         music.play(); 
@@ -27,10 +24,8 @@ function playBackgroundMusic() {
 
 
 
-// Start the music when the game starts
 playBackgroundMusic();
 
-//Make light mode default
 document.addEventListener('DOMContentLoaded', function () {
     document.body.setAttribute('data-theme', 'light');
     document.querySelector("#dark-mode-toggle i").className = "fas fa-moon"; 
@@ -42,23 +37,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 document.getElementById("music-volume").addEventListener("input", function () {
-    musicVolume = this.value; // Get the value from the slider
-    music.volume = musicVolume; // Set the music volume
+    musicVolume = this.value; 
+    music.volume = musicVolume; 
 });
 
-// Event listener to update sound effects volume
 document.getElementById("sound-volume").addEventListener("input", function () {
-    soundVolume = this.value; // Get the value from the slider
-    moveSound.volume = soundVolume; // Set the sound effects volume
+    soundVolume = this.value; 
+    moveSound.volume = soundVolume; 
 });
 
-// Event listener to show the settings modal
-// Show the modal when the settings button is clicked
 document.getElementById("settings-button").addEventListener("click", function () {
     var myModal = new bootstrap.Modal(document.getElementById('settingsModal'), {
-        keyboard: true // Allow closing with the keyboard
+        keyboard: true 
     });
-    myModal.show(); // Show the modal
+    myModal.show(); 
 });
 
 const character1 = new Image();
@@ -70,11 +62,9 @@ character3.src = 'Owlet_Monster.png';
 
 let selectedCharacter = null; 
 
-// Show character selection screen
 function showCharacterSelectionScreen() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Ensure images have loaded, then draw them
     ctx.drawImage(character1, 60, 200, character1.width * 5, character1.height * 5);
     ctx.drawImage(character2, 240, 200, character2.width * 5, character2.height * 5);
     ctx.drawImage(character3, 420, 200, character3.width * 5, character3.height * 5);
@@ -84,38 +74,31 @@ function showCharacterSelectionScreen() {
     ctx.fillText('Select your character', canvas.width / 2 - 150, 100);
 }
 
-// Wait for all images to load before showing the selection screen
 character1.onload = function() {
     character2.onload = function() {
         character3.onload = function() {
-            showCharacterSelectionScreen(); // Show screen once all images are loaded
+            showCharacterSelectionScreen(); 
         };
     };
 };
 let gamestatus="begin";
-// Handle character selection via click
 canvas.addEventListener('click', (event) => {
     if (gamestatus === "begin") {
-        // Get canvas bounds relative to the viewport
         const rect = canvas.getBoundingClientRect();
 
-        // Adjust the click coordinates relative to the canvas
         const clickX = event.clientX - rect.left;
         const clickY = event.clientY - rect.top;
 
-        // Check if the click falls within character1's area
         if (clickX >= 60 && clickX <= 60 + character1.width * 5 &&
             clickY >= 200 && clickY <= 200 + character1.height * 5) {
             selectedCharacter = 'character1';
             gamestatus = "started";
         } 
-        // Check if the click falls within character2's area
         else if (clickX >= 240 && clickX <= 240 + character2.width * 5 &&
                  clickY >= 200 && clickY <= 200 + character2.height * 5) {
             selectedCharacter = 'character2';
             gamestatus = "started";
         } 
-        // Check if the click falls within character3's area
         else if (clickX >= 420 && clickX <= 420 + character3.width * 5 &&
                  clickY >= 200 && clickY <= 200 + character3.height * 5) {
             selectedCharacter = 'character3';
@@ -124,18 +107,14 @@ canvas.addEventListener('click', (event) => {
 
         if (selectedCharacter) {
             console.log('Character selected:', selectedCharacter);
-            initializeGame(selectedCharacter); // Pass character to initializeGame
+            initializeGame(selectedCharacter); 
         }
     }
 });
 
 
-
-
-// Character sprites
 let playerSprite = new Image();
 
-// Start the game with the selected character
 function startGameC(character) {
     if (character === 'character1') {
         playerSprite.src = 'Dude_Monster.png';
@@ -145,7 +124,6 @@ function startGameC(character) {
         playerSprite.src = 'Owlet_Monster.png';
     }
 
-    // Wait for the sprite to load before starting the game
     playerSprite.onload = function () {
         playerPosition = { x: 0, y: 0 };
         moveCount = 0;
@@ -177,20 +155,16 @@ document.addEventListener('keydown', (event) => {
 });
 
 
-// Game loop to draw the maze and player sprite
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    renderMaze(maze.length, cellSize); // Ensure renderMaze() works properly with your maze data
+    renderMaze(maze.length, cellSize); 
     ctx.drawImage(playerSprite, playerPosition.x * cellSize, playerPosition.y * cellSize, cellSize, cellSize);
 
     requestAnimationFrame(gameLoop);
 }
 
-// Make sure you define `renderMaze`, `playerPosition`, `moveCount`, and `maze` elsewhere in your code
 
-
-// Difficulty settings
 const settings = {
     easy: { size: 10, cellSize: 60, moveThresholds: [35, 45], timeThresholds: [30, 60] },
     medium: { size: 15, cellSize: 45, moveThresholds: [75, 95], timeThresholds: [40, 60] },
@@ -198,23 +172,20 @@ const settings = {
     extreme: { size: 25, cellSize: 30, moveThresholds: [105, 125], timeThresholds: [90, 120] }
 };
 
-// Function to start the game and remove overlay
 function startGame() {
     document.getElementById('start-overlay').style.display = 'none';
-    document.getElementById('difficulty').disabled = false; // Enable difficulty selection
-    canvas.style.filter = 'none'; // Remove the blur effect from the canvas
+    document.getElementById('difficulty').disabled = false; 
+    canvas.style.filter = 'none'; 
     initializeGame();
     
 }
 
-// Initialize the game based on selected difficulty
-// Check if there’s a path from start to end in the maze
 function isPathExists(maze, size) {
     const directions = [
-        { dx: 0, dy: -1 }, // up
-        { dx: 1, dy: 0 },  // right
-        { dx: 0, dy: 1 },  // down
-        { dx: -1, dy: 0 }  // left
+        { dx: 0, dy: -1 }, 
+        { dx: 1, dy: 0 },  
+        { dx: 0, dy: 1 },  
+        { dx: -1, dy: 0 }  
     ];
 
     const queue = [{ x: 0, y: 0 }];
@@ -224,17 +195,15 @@ function isPathExists(maze, size) {
     while (queue.length > 0) {
         const { x, y } = queue.shift();
 
-        // If we reached the end point, there’s a path
         if (x === size - 1 && y === size - 1) return true;
 
-        // Explore neighbors
         for (const { dx, dy } of directions) {
             const nx = x + dx;
             const ny = y + dy;
 
             if (
-                nx >= 0 && ny >= 0 && nx < size && ny < size && // Stay within bounds
-                !visited[ny][nx] && maze[ny][nx] === 0          // Not visited and path cell
+                nx >= 0 && ny >= 0 && nx < size && ny < size && 
+                !visited[ny][nx] && maze[ny][nx] === 0          
             ) {
                 visited[ny][nx] = true;
                 queue.push({ x: nx, y: ny });
@@ -242,11 +211,9 @@ function isPathExists(maze, size) {
         }
     }
 
-    // No path found
     return false;
 }
 function initializeGame(selectedCharacter) {
-    // Reset timer and move counter
     clearInterval(timerInterval);
     elapsedTime = 0;
     updateTimerDisplay();
@@ -258,18 +225,15 @@ function initializeGame(selectedCharacter) {
 
     cellSize = CANVAS_SIZE / size;
 
-    // Generate a solvable maze
     do {
         maze = generateMaze(size);
     } while (!isPathExists(maze, size));
 
-    // Initialize game state
     playerPosition = { x: 0, y: 0 };
     moveCount = 0;
     document.getElementById("move-count").innerText = moveCount;
     gameOver = false;
 
-    // Load the selected character sprite
     if (selectedCharacter === 'character1') {
         playerSprite.src = 'Dude_Monster.png';
     } else if (selectedCharacter === 'character2') {
@@ -279,7 +243,6 @@ function initializeGame(selectedCharacter) {
     }
 
     playerSprite.onload = function () {
-        // Start timer and render initial game state
         startTimer();
         renderMaze(size, cellSize);
         renderPlayer();
@@ -288,11 +251,10 @@ function initializeGame(selectedCharacter) {
     playerSprite.onerror = function () {
         console.error('Error loading character sprite:', playerSprite.src);
     };
-    renderMaze(size, cellSize); // Draw the maze
+    renderMaze(size, cellSize); 
     renderPlayer(); 
 }
 
-// Function to render the player on the maze
 function renderPlayer() {
     ctx.drawImage(
         playerSprite,
@@ -304,7 +266,6 @@ function renderPlayer() {
 }
 
 
-// Function to render the maze
 function renderMaze(size, cellSize) {
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
@@ -317,10 +278,10 @@ function renderMaze(size, cellSize) {
 }
 
 function startTimer() {
-    elapsedTime = 0; // Reset elapsed time at the start
+    elapsedTime = 0; 
     timerInterval = setInterval(() => {
         elapsedTime++;
-        updateTimerDisplay(); // Update the display every second
+        updateTimerDisplay(); 
     }, 1000); 
 }
 
@@ -335,47 +296,42 @@ function stopTimer() {
     clearInterval(timerInterval);
 }
 
-// Depth-First Search Maze Generation with Forced End Cell Connection
 function generateMaze(size) {
-    const maze = Array(size).fill().map(() => Array(size).fill(1)); // Initialize maze with walls
+    const maze = Array(size).fill().map(() => Array(size).fill(1)); 
     const directions = [
-        { dx: 0, dy: -1 }, // up
-        { dx: 1, dy: 0 },  // right
-        { dx: 0, dy: 1 },  // down
-        { dx: -1, dy: 0 }  // left
+        { dx: 0, dy: -1 }, 
+        { dx: 1, dy: 0 },  
+        { dx: 0, dy: 1 },  
+        { dx: -1, dy: 0 }  
     ];
 
     function dfs(x, y) {
-        maze[y][x] = 0; // Mark the current cell as a path
+        maze[y][x] = 0;
 
-        // Shuffle directions to ensure different maze generation
         for (let i = directions.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [directions[i], directions[j]] = [directions[j], directions[i]]; // Swap
+            [directions[i], directions[j]] = [directions[j], directions[i]];
         }
 
         for (const { dx, dy } of directions) {
             const nx = x + dx * 2;
             const ny = y + dy * 2;
 
-            // Check if the new cell is within bounds and has not been visited (still a wall)
             if (nx >= 0 && ny >= 0 && nx < size && ny < size && maze[ny][nx] === 1) {
-                // Carve a path between the current cell and new cell
-                maze[y + dy][x + dx] = 0; // Carve intermediary cell
-                maze[ny][nx] = 0; // Carve target cell
-                dfs(nx, ny); // Recursive call to continue DFS
+                maze[y + dy][x + dx] = 0; 
+                maze[ny][nx] = 0;
+                dfs(nx, ny); 
             }
         }
     }
 
-    dfs(0, 0); // Start DFS from the top-left corner
+    dfs(0, 0); 
 
-    // Ensure bottom-right is a path by connecting it if isolated
     if (maze[size - 2][size - 1] === 0 || maze[size - 1][size - 2] === 0) {
         maze[size - 1][size - 1] = 0;
     } else {
         maze[size - 1][size - 1] = 0;
-        maze[size - 2][size - 1] = 0; // Connect directly to avoid isolation
+        maze[size - 2][size - 1] = 0; 
     }
 
     return maze;
@@ -396,8 +352,7 @@ function renderMaze(size, cellSize) {
 
 
 
-// Update player position and count moves
-let gameOver = false; // Flag to track if the game has ended
+let gameOver = false; 
 
 
 function movePlayer(direction) {
@@ -409,13 +364,11 @@ function movePlayer(direction) {
     else if (direction === 'left') newX--;
     else if (direction === 'right') newX++;
 
-    // Check if the new position is within bounds and not a wall
     if (newX >= 0 && newX < maze.length && newY >= 0 && newY < maze.length && maze[newY][newX] === 0) {
         playerPosition = { x: newX, y: newY };
         moveCount++;
         document.getElementById("move-count").innerText = moveCount;
 
-        // Check for game over condition
         if (newX === maze.length - 1 && newY === maze.length - 1) {
             gameOver = true;
             console.log('Congratulations! You reached the goal!');
@@ -423,7 +376,6 @@ function movePlayer(direction) {
             winSound.play();
         }
 
-        // Re-render the maze and player
         renderMaze(maze.length, cellSize);
         renderPlayer();
         document.getElementById("difficulty").disabled = true;
@@ -437,7 +389,6 @@ function calculateStars(moves, elapsedTime, difficulty) {
     let moveStars = 0;
     let timeStars = 0;
 
-    // Calculate stars based on moves
     if (moves <= moveThresholds[0]) {
         moveStars = 3;
     } else if (moves > moveThresholds[0] && moves <= moveThresholds[1]) {
@@ -446,7 +397,6 @@ function calculateStars(moves, elapsedTime, difficulty) {
         moveStars = 1;
     }
 
-    // Calculate stars based on time
     if (elapsedTime <= timeThresholds[0]) {
         timeStars = 3;
     } else if (elapsedTime > timeThresholds[0] && elapsedTime <= timeThresholds[1]) {
@@ -455,53 +405,47 @@ function calculateStars(moves, elapsedTime, difficulty) {
         timeStars = 1;
     }
 
-    // Return the lower of the two star counts
     return Math.min(moveStars, timeStars); 
 }
 
 function displayWinModal() {
-    const finalMoves = moveCount; // Get the move count
-    const difficulty = document.getElementById("difficulty").value; // Get the current difficulty
+    const finalMoves = moveCount; 
+    const difficulty = document.getElementById("difficulty").value; 
 
     document.getElementById("final-moves").innerText = finalMoves;
 
-    // Format elapsed time to display in minutes and seconds
     const minutes = Math.floor(elapsedTime / 60);
     const seconds = elapsedTime % 60;
     document.getElementById("final-time").innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
-    // Calculate stars based on the current difficulty
     const totalStars = calculateStars(finalMoves, elapsedTime, difficulty);
-    console.log("Total Stars:", totalStars);  // Log the star count for debugging
-    displayStars(totalStars); // Call function to display stars
-    $('#winModal').modal('show'); // Show the modal using Bootstrap
+    console.log("Total Stars:", totalStars);  
+    displayStars(totalStars); 
+    $('#winModal').modal('show'); 
 }
 
-// Function to display stars in the modal
 function displayStars(starCount) {
     const starContainer = document.getElementById("star-rating");
-    starContainer.innerHTML = ''; // Clear previous stars
-
+    starContainer.innerHTML = ''; 
     setTimeout(() => {
         for (let i = 0; i < starCount; i++) {
             const star = document.createElement('span');
             star.innerHTML = '★';
             star.style.color = 'gold';
-            star.style.opacity = 0; // Initially hide the star
+            star.style.opacity = 0; 
             starContainer.appendChild(star);
 
-            // Animate the star after a short delay
             setTimeout(() => {
                 star.animate([
                     { opacity: 0 },
                     { opacity: 1 }
                 ], {
-                    duration: 500, // Animation duration in milliseconds
-                    fill: 'forwards' // Keep the final state after animation
+                    duration: 500, 
+                    fill: 'forwards' 
                 });
-            }, i * 300); // Delay each star's animation
+            }, i * 300); 
         }
-    }, 300); // Add a slight delay before adding stars (300ms)
+    }, 300); 
 }
 
 function playMoveSound() {
@@ -512,18 +456,16 @@ function toggleDarkMode() {
     const body = document.body;
     const isDarkMode = body.getAttribute('data-theme') === 'dark';
     
-    // Toggle dark mode
     if (isDarkMode) {
         body.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
-        document.querySelector("#dark-mode-toggle i").className = "fas fa-moon"; // Moon icon for light mode
+        document.querySelector("#dark-mode-toggle i").className = "fas fa-moon"; 
     } else {
         body.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
-        document.querySelector("#dark-mode-toggle i").className = "fas fa-sun"; // Sun icon for dark mode
+        document.querySelector("#dark-mode-toggle i").className = "fas fa-sun"; 
     }
 
-    // Apply data-theme to other key elements
     document.querySelector('.game-container').setAttribute('data-theme', isDarkMode ? '' : 'dark');
     document.querySelector('#mazeCanvas').setAttribute('data-theme', isDarkMode ? '' : 'dark');
     document.querySelector('#winModal').setAttribute('data-theme', isDarkMode ? '' : 'dark');
@@ -544,11 +486,10 @@ function playAgain() {
     initializeGame(); 
 
     playerPosition = { x: 0, y: 0 }; 
-    gameOver = false; // Ensure the game can continue
+    gameOver = false; 
 }
 
 
 
 
-// Initialize the game on load
 initializeGame();
