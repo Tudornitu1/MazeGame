@@ -11,6 +11,13 @@ let cellsize;
 let timerInterval;
 let elapsedTime = 0;
 
+const goalGif = new Image();
+goalGif.src = 'assets/images/diamond.gif'; 
+
+goalGif.onload = function() {
+    renderMaze(maze.length, cellSize); 
+};
+
 const music = document.getElementById("music");
 let musicVolume = 1;
 let soundVolume = 1;
@@ -54,11 +61,11 @@ document.getElementById("settings-button").addEventListener("click", function ()
 });
 
 const character1 = new Image();
-character1.src = 'Dude_Monster.png'; 
+character1.src = 'assets/images/Dude_Monster.png'; 
 const character2 = new Image();
-character2.src = 'Pink_Monster.png';
+character2.src = 'assets/images/Pink_Monster.png';
 const character3 = new Image();
-character3.src = 'Owlet_Monster.png';
+character3.src = 'assets/images/Owlet_Monster.png';
 
 let selectedCharacter = null; 
 
@@ -117,11 +124,11 @@ let playerSprite = new Image();
 
 function startGameC(character) {
     if (character === 'character1') {
-        playerSprite.src = 'Dude_Monster.png';
+        playerSprite.src = 'assets/images/Dude_Monster.png';
     } else if (character === 'character2') {
-        playerSprite.src = 'Pink_Monster.png';
+        playerSprite.src = 'assets/images/Pink_Monster.png';
     } else if (character === 'character3') {
-        playerSprite.src = 'Owlet_Monster.png';
+        playerSprite.src = 'assets/images/Owlet_Monster.png';
     }
 
     playerSprite.onload = function () {
@@ -235,11 +242,11 @@ function initializeGame(selectedCharacter) {
     gameOver = false;
 
     if (selectedCharacter === 'character1') {
-        playerSprite.src = 'Dude_Monster.png';
+        playerSprite.src = 'assets/images/Dude_Monster.png';
     } else if (selectedCharacter === 'character2') {
-        playerSprite.src = 'Pink_Monster.png';
+        playerSprite.src = 'assets/images/Pink_Monster.png';
     } else if (selectedCharacter === 'character3') {
-        playerSprite.src = 'Owlet_Monster.png';
+        playerSprite.src = 'assets/images/Owlet_Monster.png';
     }
 
     playerSprite.onload = function () {
@@ -271,11 +278,19 @@ function renderMaze(size, cellSize) {
 
     maze.forEach((row, y) => {
         row.forEach((cell, x) => {
-            ctx.fillStyle = (x === size - 1 && y === size - 1) ? '#00ff00' : (cell === 1 ? '#333' : '#f8f9fa');
-            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            if (x === size - 1 && y === size - 1) {
+                // Render the GIF at the goal position
+                ctx.drawImage(goalGif, x * cellSize, y * cellSize, cellSize, cellSize);
+            } else {
+                // Render walls and paths
+                ctx.fillStyle = cell === 1 ? '#333' : '#f8f9fa';
+                ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            }
         });
     });
 }
+
+
 
 function startTimer() {
     elapsedTime = 0; 
@@ -336,21 +351,6 @@ function generateMaze(size) {
 
     return maze;
 }
-
-function renderMaze(size, cellSize) {
-    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-    maze.forEach((row, y) => {
-        row.forEach((cell, x) => {
-            ctx.fillStyle = (x === size - 1 && y === size - 1) ? '#00ff00' : (cell === 1 ? '#333' : '#f8f9fa');
-            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-        });
-    });
-}
-
-
-
-
 
 let gameOver = false; 
 
