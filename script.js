@@ -6,8 +6,7 @@ let moveCount = 0;
 const moveSound = document.getElementById("move-sound");
 const winSound = document.getElementById("win-sound");
 const CANVAS_SIZE = 630;
-let cellsize;
-
+this.cellsize = 0;
 let timerInterval;
 let elapsedTime = 0;
 
@@ -36,9 +35,9 @@ playBackgroundMusic();
 document.addEventListener('DOMContentLoaded', function () {
     document.body.setAttribute('data-theme', 'light');
     document.querySelector("#dark-mode-toggle i").className = "fas fa-moon"; 
-    document.querySelector('.game-container').setAttribute('data-theme', savedTheme === 'dark' ? 'dark' : 'light');
-    document.querySelector('#mazeCanvas').setAttribute('data-theme', savedTheme === 'dark' ? 'dark' : 'light');
-    document.querySelector('#winModal').setAttribute('data-theme', savedTheme === 'dark' ? 'dark' : 'light');
+    // document.querySelector('.game-container').setAttribute('data-theme', savedTheme === 'dark' ? 'dark' : 'light');
+    // document.querySelector('#mazeCanvas').setAttribute('data-theme', savedTheme === 'dark' ? 'dark' : 'light');
+    // document.querySelector('#winModal').setAttribute('data-theme', savedTheme === 'dark' ? 'dark' : 'light');
     playBackgroundMusic();
 });
 
@@ -279,10 +278,8 @@ function renderMaze(size, cellSize) {
     maze.forEach((row, y) => {
         row.forEach((cell, x) => {
             if (x === size - 1 && y === size - 1) {
-                // Render the GIF at the goal position
                 ctx.drawImage(goalGif, x * cellSize, y * cellSize, cellSize, cellSize);
             } else {
-                // Render walls and paths
                 ctx.fillStyle = cell === 1 ? '#333' : '#f8f9fa';
                 ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
             }
