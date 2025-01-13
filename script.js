@@ -226,8 +226,8 @@ function initializeGame(selectedCharacter) {
     const difficulty = document.getElementById("difficulty").value;
     const { size, cellSize: cellSizeFromDifficulty } = settings[difficulty];
 
-    canvas.width = CANVAS_SIZE;
-    canvas.height = CANVAS_SIZE;
+    // canvas.width = CANVAS_SIZE;
+    // canvas.height = CANVAS_SIZE;
 
     cellSize = CANVAS_SIZE / size;
 
